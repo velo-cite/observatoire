@@ -3,12 +3,14 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Article;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class ArticleCrudController extends AbstractCrudController
 {
@@ -29,8 +31,13 @@ class ArticleCrudController extends AbstractCrudController
             'Thibaud'   => 'Thibaud',
             'William'   => 'William'
         ]);
-        yield TextEditorField::new('content');
+        yield TextEditorField::new('content')->setFormType(CKEditorType::class);
         yield DateTimeField::new('dateCreation')->hideOnForm();
         yield DateTimeField::new('dateModification')->hideOnForm();
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig');
     }
 }
