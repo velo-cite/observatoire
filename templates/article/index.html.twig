@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }} | {{ parent()}}{% endblock %}
+{% block titleH1 %}{{ article.title }}{% endblock %}
+{% block detailTitre %}{% endblock %}
+
+{% block body %}
+{{ article.content|raw}}
+{% endblock %}
