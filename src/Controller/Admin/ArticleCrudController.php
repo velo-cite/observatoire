@@ -29,7 +29,9 @@ class ArticleCrudController extends AbstractCrudController
             'Pierre'    => 'Pierre',
             'Ludovic'   => 'Ludovic',
             'Thibaud'   => 'Thibaud',
-            'William'   => 'William'
+            'William'   => 'William',
+            'Loïc'   => 'Loïc',
+            'Benoit'   => 'Benoit',
         ]);
         yield TextEditorField::new('content')->setFormType(CKEditorType::class);
         yield DateTimeField::new('dateCreation')->hideOnForm();

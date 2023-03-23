@@ -330,7 +330,7 @@ if ( layersLoaded > 0 )
 map = L.map('mapFrame',
   {
     fullscreenControl: true,
-    maxBounds: [ [48.91, 2.49], [48.80, 2.19] ],
+    maxBounds: [ [44.944797, -0.766678], [44.749594, -0.500209] ],
     maxBoundsViscosity: 1.0,
     minZoom: 11
   }) ;
@@ -339,7 +339,7 @@ L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a> | Vélo-Cité Bordeaux Métropole | Mise à jour : 21/03/2023',
   subdomains: 'abcd',
 }).addTo(map);
-map.fitBounds([ [48.91, 2.49], [48.80, 2.19] ]) ;
+map.fitBounds([ [44.90, -0.766678], [44.749594, -0.500209] ]) ;
 map.on('movestart', function(e) { info.update() ; });
 map.on('zoomstart', function(e) { info.update() ; });
 map.scrollWheelZoom.disable()
