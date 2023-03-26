@@ -1,5 +1,6 @@
 import L from 'leaflet';
 import './styles/map.css';
+var turf = require('@turf/turf');
 
 var map;
 var areaParisSquareKilometers =
@@ -73,7 +74,10 @@ function highlightFeature(e)
 
   //layer.className += " selected";
   //layer.setStyle({class: 'my-class', weight: 10});
-  $(layer._path).addClass("path-selected");
+  // $(layer._path).addClass("path-selected");
+  layer.className += " selected";
+
+  layer.setStyle({class: "selected"});
 
   // Nothing to highlight for a point, so don't change its style
   //if ( layer.feature.geometry.type != "Point" )
@@ -94,7 +98,7 @@ function highlightFeature(e)
 function resetStyleFeature(e)
 {
   var layer = e.target;
-  $(layer._path).removeClass("path-selected");
+  // $(layer._path).removeClass("path-selected");
   // if ( layer.feature.geometry.type != "Point" )
   // {
   //   //layer.setStyle(styleFeature(layer.feature)) ;
@@ -107,49 +111,50 @@ function resetStyleFeature(e)
 function updateInfo(feature)
 {
   var content = '' ;
-  if ( typeof feature != "undefined" && feature.geometry.type == "Polygon")
-  {
+  if ( typeof feature != "undefined" && feature.geometry.type == "Polygon") {
     var areaFeature = turf.area(feature) / 1000000.0 ;
     areaFeature = Math.round( 1000 * areaFeature ) / 1000 ;
-
-    if (feature.properties && feature.properties.name)
+    if (feature.properties && feature.properties.name) {
       content += "<b>"+feature.properties.name+"</b><br/>" ;
-    if (feature.properties && feature.properties.description)
+    }
+    if (feature.properties && feature.properties.description) {
       content += feature.properties.description+"<br/>" ;
-
-    content += "Surface : "+areaFeature+"km²";
-  }
-  else if ( typeof feature != "undefined" && feature.geometry.type == "LineString" )
-  {
+    }
+    content += "Id : " + feature.properties.gid+"<br/>" ;
+    content += "Surface : "+areaFeature+"km²<br/>";
+    content += "État : "+feature.properties.etat;
+  } else if ( typeof feature != "undefined" && feature.geometry.type == "LineString" ) {
     var lengthFeature = Math.round( 100 * turf.lineDistance(feature) ) / 100 ;
 
-    if (feature.properties && feature.properties['Rue ou axe'])
+    if (feature.properties && feature.properties['Rue ou axe']) {
       content += "<b>"+feature.properties['Rue ou axe']+"</b><br/>" ;
-    if (feature.properties && feature.properties['Etat'])
+    }
+    if (feature.properties && feature.properties['Etat']) {
       content += feature.properties['Etat'] + "<br/>";
-    if (feature.properties && feature.properties['Statut'])
+    }
+    if (feature.properties && feature.properties['Statut']) {
       content += feature.properties['Statut'] + "<br/>";
-    if (feature.properties && feature.properties.description)
+    }
+    if (feature.properties && feature.properties.description) {
       content += feature.properties.description+"<br/>" ;
-
+    }
     content += "Longueur : "+lengthFeature+"km";
-  }
-  else if ( typeof feature != "undefined" && feature.geometry.type == "Point" )
-  {
-    if (feature.properties && feature.properties.name)
+  } else if ( typeof feature != "undefined" && feature.geometry.type == "Point" ) {
+    if (feature.properties && feature.properties.name) {
       content += "<b>"+feature.properties.name+"</b><br/>" ;
-    if (feature.properties && feature.properties.description)
+    }
+    if (feature.properties && feature.properties.description) {
       content += feature.properties.description+"<br/>" ;
-  }
-  else
+    }
+  } else {
     content = "Placez le curseur sur un segment pour plus d'informations" ;
+  }
 
   this._div.innerHTML = '<h4>Informations</h4>' + content ;
 }
 
 function bindFeatureEvents(feature, layer)
 {
-  console.log(feature);
   layer.on(
   {
     mouseover: highlightFeature,
@@ -197,10 +202,26 @@ function styleFeature(className) {
     function applyStyle(feature)
     {
         var finalClassName = className;
-        if (feature.properties['Niveau'] === "Primaire")
-            finalClassName += " primary";
-        else 
-            finalClassName += " secondary";
+        let colorCss;
+        switch (feature.properties['etat']) {
+          case "wait":
+            colorCss = 'wait';
+            break;
+          case "etude":
+            colorCss = 'etude';
+            break;
+          case "travaux":
+            colorCss = 'travaux';
+            break;
+          case "done":
+            colorCss = 'done';
+            break;
+          default:
+            colorCss = 'no-info'
+            break;
+        }
+
+        finalClassName += " " + colorCss;
         return {"className": finalClassName};
     }
     return applyStyle;
@@ -363,7 +384,7 @@ info.onAdd = function (map)
     this.update();
     return this._div;
 };
-info.update = updateInfo ;
+info.update = updateInfo;
 info.addTo(map);
 
 //var planVeloUrl = "https://gxis.codeursenliberte.fr/fr/layers/5531d590-7425-4997-aa86-0a0386e48b97/geojson?authkey=Pfoq9bpvPpkjY9j5";

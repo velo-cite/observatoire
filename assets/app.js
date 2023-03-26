@@ -6,7 +6,7 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.css';
+import './styles/app.scss';
 
 // On page load or when changing themes, best to add inline in `head` to avoid FOUC
 var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
