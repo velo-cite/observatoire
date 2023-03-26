@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import './styles/map.css';
-var turf = require('@turf/turf');
+import * as turf from '@turf/turf'
 
 var map;
 var areaParisSquareKilometers =
@@ -120,9 +120,16 @@ function updateInfo(feature)
     if (feature.properties && feature.properties.description) {
       content += feature.properties.description+"<br/>" ;
     }
-    content += "Id : " + feature.properties.gid+"<br/>" ;
+    if (feature.properties && feature.properties.gid) {
+      content += "Id : " + feature.properties.gid+"<br/>" ;
+    }
+    if (feature.properties && feature.properties.numReve) {
+      content += "ReVE n°" + feature.properties.numReve+"<br/>" ;
+    }
     content += "Surface : "+areaFeature+"km²<br/>";
-    content += "État : "+feature.properties.etat;
+    if (feature.properties && feature.properties.etat) {
+      content += "État : " + feature.properties.etat;
+    }
   } else if ( typeof feature != "undefined" && feature.geometry.type == "LineString" ) {
     var lengthFeature = Math.round( 100 * turf.lineDistance(feature) ) / 100 ;
 
