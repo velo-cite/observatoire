@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blog | {{ parent()}}{% endblock %}
+{% block titleH1 %}Blog{% endblock %}
+
+{% block body %}
+{% for article in articles %}
+    <h2>{{ article.title }}</h2>
+    {{ article.dateCreation|date('d/m/Y') }}
+    <a href="{{ path('app_article', {slug: article.slug}) }}">En savoir plus</a>
+{% endfor %}
+{% endblock %}

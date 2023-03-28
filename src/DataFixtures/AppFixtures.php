@@ -17,22 +17,13 @@ class AppFixtures extends Fixture
         /******
          * ARTICLES 
          ******/
-        // $product = new Product();
-        // $manager->persist($product);
         $article = new Article();
         $article->setTitle('Déploiement de la première ligne du ReVE');
         $article->setSlug('deploiement-de-la-premiere-ligne-du-reve');
         $article->getAuthor('Paul');
         $article->setDateCreation(new \DateTime('2023-03-19 16:47:46'));
         $manager->persist($article);
-        
-        $article = new Article();
-        $article->setTitle('Vélo Score');
-        $article->setSlug('velo-score');
-        $article->getAuthor('Thibaud');
-        $article->setDateCreation(new \DateTime('2023-03-22 00:25:50'));
-        $manager->persist($article);
-        
+
         $article = new Article();
         $article->setTitle('Évolution de la pratique');
         $article->setSlug('evolution-de-la-pratique');
