@@ -11,17 +11,17 @@
 <div class="w-full mt-6 pt-4 mb-10">
   <p>Taux d'avancement du ReVE :</p>
   <div class="shadow w-full bg-stone-200">
-    <div class="bg-blue-900 text-xs leading-none py-1 text-center text-white" style="width: 45%">45%</div>
+    <div id="progress-done" class="bg-blue-900 text-xs leading-none py-1 text-center text-white transition-all duration-1000" style="width:0%;">0%</div>
   </div>
 
   <p class="mt-2">Taux d'avancement du mandat:</p>
   <div class="shadow w-full bg-stone-200">
-    <div class="bg-teal-900 text-xs leading-none py-1 text-center text-white" style="width: 55%">55%</div>
+    <div id="progress-mandat" class="bg-teal-900 text-xs leading-none py-1 text-center text-white transition-all duration-1000" style="width: 0%">0%</div>
   </div>
 
   <p class="mt-2">Taux d'avancement jusqu'à l'objectif de fin du ReVE (2030):</p>
   <div class="shadow w-full bg-stone-200">
-    <div class="bg-orange-900 text-xs leading-none py-1 text-center text-white" style="width: 65%">65%</div>
+    <div id="progress-full-time-reve" class="bg-orange-900 text-xs leading-none py-1 text-center text-white transition-all duration-1000" style="width: 0%">0%</div>
   </div>
 </div>
 
@@ -31,11 +31,11 @@
   <i>Cliquez les cases ci-dessous pour (dé-)sélectionner les catégories:</i>
 
   <ul class="checkboxes">
-    <li><label class="checkbox no-info" for="checkbox-no-info"><input type="checkbox" id="checkbox-no-info" onclick="toggleLayer('no-info')" checked="checked" /><span class="indicator"></span>En attente d'information</label></li>
-    <li><label class="checkbox wait" for="checkbox-wait"><input type="checkbox" id="checkbox-wait" onclick="toggleLayer('wait')" checked="checked" /><span class="indicator"></span>Pistes cyclables en attente</label></li>
-    <li><label class="checkbox etude" for="checkbox-etude"><input type="checkbox" id="checkbox-etude" onclick="toggleLayer('etude')" checked="checked" /><span class="indicator"></span>Pistes cyclables à l'étude</label></li>
-    <li><label class="checkbox travaux" for="checkbox-travaux"><input type="checkbox" id="checkbox-travaux" onclick="toggleLayer('travaux')" checked="checked" /><span class="indicator"></span>Pistes cyclables en construction</label></li>
-    <li><label class="checkbox done" for="checkbox-done"><input type="checkbox" id="checkbox-done" onclick="toggleLayer('done')" checked="checked" /><span class="indicator"></span>Pistes cyclables réalisées</label></li>
+    <li><label class="checkbox no-info" for="checkbox-no-info"><input type="checkbox" id="checkbox-no-info" data-layer="no-info" checked="checked" /><span class="indicator"></span>En attente d'information</label></li>
+    <li><label class="checkbox wait" for="checkbox-wait"><input type="checkbox" id="checkbox-wait" data-layer="wait" checked="checked" /><span class="indicator"></span>Pistes cyclables en attente</label></li>
+    <li><label class="checkbox etude" for="checkbox-etude"><input type="checkbox" id="checkbox-etude" data-layer="etude" checked="checked" /><span class="indicator"></span>Pistes cyclables à l'étude</label></li>
+    <li><label class="checkbox travaux" for="checkbox-travaux"><input type="checkbox" id="checkbox-travaux" data-layer="travaux" checked="checked" /><span class="indicator"></span>Pistes cyclables en construction</label></li>
+    <li><label class="checkbox done" for="checkbox-done"><input type="checkbox" id="checkbox-done" data-layer="done" checked="checked" /><span class="indicator"></span>Pistes cyclables réalisées</label></li>
   </ul>
   {# <ul class="legend done-subcategory">
       <li><span id="checkbox-done-layers" onclick="toggleLayersDone()">&check;</span> Pistes cyclables réalisées :  </li><br/>

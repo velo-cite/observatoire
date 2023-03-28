@@ -11,12 +11,12 @@ var areaParisSquareKilometers =
     - 0.9567 ; // Area of graveyards https://fr.wikipedia.org/wiki/Cimeti%C3%A8res_parisiens
 var areaZonesApaisees = 0 ;
 var totalTheory = 0; 
-var lengthLanesDone = { 'corona': 0.0, 'semipersistent': 0.0, 'persistent': 0.0, 'novel': 0.0};
+var lengthLanesDone = 0.0;
 var mapRealisationColumn = {
-       "Plots jaunes": "corona",
-       "Semi-pérennisation légère": "semipersistent", 
-       "Pérennisation en dur": "persistent",
-       "Nouveau linéaire": "novel"};
+       "Plots jaunes": "wait",
+       "Semi-pérennisation légère": "etude", 
+       "Pérennisation en dur": "travaux",
+       "Nouveau linéaire": "done"};
 var layersLoaded = 0 ;
 var markers = [] ;
 var mapLayers = {};
@@ -25,9 +25,15 @@ var planVeloPratiqueLayer ;
 var hueReferences = [ [0, "#ff0000"], [0.33333, "#228b22"], [0.10784, "#ffa500"] ] ; // Red, green, orange
 
 function isPlan2022(feature) {
-  var horsPlan2022 = ['Réalisé Pré-2021', 'Hors Plan Vélo (Embellir)', "Annoncé réalisé"];
-  return ! horsPlan2022.includes(feature.properties['Etat']);
+  var plan2022 = ['wait', 'etude', 'travaux', 'done'];
+  return plan2022.includes(feature.properties['etat']);
 }
+
+function isComplete(feature) {
+  var plan2022 = ['existant2020', 'done'];
+  return plan2022.includes(feature.properties['etat']);
+}
+
 
 function toggleLegend(e)
 {
@@ -223,6 +229,9 @@ function styleFeature(className) {
           case "done":
             colorCss = 'done';
             break;
+          case "existant2020":
+            colorCss = 'done';
+            break;
           default:
             colorCss = 'no-info'
             break;
@@ -238,120 +247,59 @@ function calculateLengths(features)
 {
   var length, realisation;
   for (const feature of features) {
-      //totalTheory += turf.length(feature, {units: "kilometers"});
-      length = parseFloat(feature.properties.calculated_length) / 1000;
-      if (length) {
-          if (isPlan2022(feature)) {
-              totalTheory +=  length;
-          realisation = feature.properties['Réalisation'];
-          if (realisation) {
-              lengthLanesDone[mapRealisationColumn[realisation]] += length;
-     }
-     }
+    length = turf.area(feature, {units: "kilometers"});
+    // length = parseFloat(feature.properties.calculated_length) / 1000;
+    if (length) {
+      totalTheory +=  length;
+      if (isComplete(feature)) {
+        lengthLanesDone += length;
+      }
+    }
   }
- }
   console.log("totalTheory = ", totalTheory);
   console.log("done = ", lengthLanesDone);
 }
 
 
 function toggleLayer(name) {
-   var layer = mapLayers[name];
-   var elem = document.getElementById("checkbox-" + name);
-    if (map.hasLayer(layer)) {
-
-       elem.innerText = "" ;
-       elem.className = name + "-unchecked";
-       map.removeLayer(layer);
-    }
-    else 
-    {
-       document.getElementById("checkbox-" + name).innerText = "✓" ;
-       elem.className = name;
-       map.addLayer(layer);
-     }
-     setToggleDone();
-}
-
-function setToggleDone() {
-   var arr = ["novel", "persistent", "semipersistent"]; 
-   var visible = arr.some((name) => (map.hasLayer(mapLayers[name])));
-   var elem = document.getElementById("checkbox-done-layers");
-   if (visible) {
-        elem.innerText = "✓" ;
-   }
-   else {
-        elem.innerText = "" ;
-   };
-}
-
-function toggleLayersDone() {
-   var arr = ["novel", "persistent", "semipersistent"]; 
-   var elem, layer;
-   var visible = arr.some((name) => (map.hasLayer(mapLayers[name])));
-   for (i=0; i<arr.length; ++i) {
-      name = arr[i];
-      layer = mapLayers[name];
-      elem = document.getElementById("checkbox-" + name);
-      if (visible) {
-        elem.innerText = "" ;
-        elem.className = name + "-unchecked";
-        map.removeLayer(layer);
-      }
-      else 
-      {
-         elem.innerText = "✓" ;
-         elem.className = name;
-         map.addLayer(layer);
-      }
+  var layer = mapLayers[name];
+  if (map.hasLayer(layer)) {
+    map.removeLayer(layer);
+  } else {
+    map.addLayer(layer);
   }
-  setToggleDone();
+}
 
+function diffTwoDate(date1, date2) 
+{
+   // différence des heures
+  var time_diff = date2.getTime() - date1.getTime();
+   // différence de jours
+  return time_diff / (1000 * 3600 * 24);
 }
 
 // Function to display set the width of the progress bar
 function displayProgressBars()
 {
-  layersLoaded++ ;
+  var totalDone = lengthLanesDone;
+  var totalDonePercent = Math.round((totalDone / totalTheory) * 100);
+  document.getElementById('progress-done').style.width = totalDonePercent + "%";
+  document.getElementById('progress-done').textContent = totalDonePercent + "%";
 
-  // If the two layers have been loaded, perform the update of width and log everything in console
-var sumLengths = function (obj) { return obj['semipersistent'] + obj['persistent'] + obj['novel']};
-
-if ( layersLoaded > 0 )
-  {
-
-    var totalDone = sumLengths(lengthLanesDone);
-    var totalDonePercent = Math.round((totalDone / totalTheory) * 100);
-
-    //var primairePercent = (lengthLanesDone[iPlanVeloPri]) / lengthLanesTheory[iPlanVeloPri] * 100 ;
-    //var primaireCoronaPercent = (lengthCoronaPiste[iPlanVeloPri]) / lengthLanesTheory[iPlanVeloPri] * 100 ;
-    //var primaireDistance = Math.round(lengthLanesDone[iPlanVeloPri]) + 'km';
-    //var primaireCoronaDistance = Math.round(lengthCoronaPiste[iPlanVeloPri]) + 'km';
-    //var primaireRemainingDistance = Math.round(lengthLanesTheory[iPlanVeloPri] - lengthLanesDone[iPlanVeloPri] - lengthCoronaPiste[iPlanVeloPri]) + 'km';
-
-    //var secondaireDistance = Math.round(lengthLanesDone[iPlanVeloSec]) + 'km';
-    //var secondaireCoronaDistance = Math.round(lengthCoronaPiste[iPlanVeloSec]) + 'km';
-    //var secondaireRemainingDistance = Math.round(lengthLanesTheory[iPlanVeloSec] - lengthLanesDone[iPlanVeloSec] - lengthCoronaPiste[iPlanVeloSec]) + 'km';
-
-    //var secondairePercent = (lengthLanesDone[iPlanVeloSec]) / lengthLanesTheory[iPlanVeloSec] * 100 ;
-    //var secondaireCoronaPercent = (lengthCoronaPiste[iPlanVeloSec]) / lengthLanesTheory[iPlanVeloSec] * 100 ;
-    //var allCoronapistePercent =  (lengthCoronaPiste[iPlanVeloPri] + lengthCoronaPiste[iPlanVeloSec]) / (lengthLanesTheory[iPlanVeloPri] + lengthLanesTheory[iPlanVeloSec]) * 100;
-
-    //var allLanesPercent = (lengthLanesDone[iPlanVeloPri] + lengthLanesDone[iPlanVeloSec]) / (lengthLanesTheory[iPlanVeloPri] + lengthLanesTheory[iPlanVeloSec]) * 100;
-    //disp( null, "length-corona", Math.round(lengthLanesDone['corona'] * 10)/10 + ' km');
-// disp( null, "length-semipersistent", Math.round(lengthLanesDone['semipersistent'] * 10)/10 + ' km');
-// disp( null, "length-persistent", Math.round(lengthLanesDone['persistent']*10)/10 + ' km');
-// disp( null, "length-novel", Math.round(lengthLanesDone['novel']*10)/10 + ' km');
-// disp( totalDonePercent, "cyclepaths-done") ;
-// disp( Math.max(0, 100 - totalDonePercent), "cyclepaths-remaining") ;
-    //disp( Math.round( primairePercent ), "pistePrimaire", primaireDistance) ;
-    //disp( Math.round( primaireCoronaPercent ), "coronapistePrimaire", primaireCoronaDistance) ;
-    //disp( Math.round( secondairePercent ), "pisteSecondaire", secondaireDistance) ;
-    //disp( Math.round( secondaireCoronaPercent ), "coronapisteSecondaire", secondaireCoronaDistance) ;
-    //disp( Math.round( allCoronapistePercent ), "coronapisteAll") ;
-    //disp( Math.round( allLanesPercent ), "pisteAll") ;
-    //disp( Math.max(0, 100 - Math.round( allLanesPercent ) - Math.round(allCoronapistePercent)), "pisteTheoryAll") ;
-  }
+  var dateDebutMandat = new Date("2020-07-03");
+  var dateFinMandat = new Date("2026-07-03");
+  let nbJourMandat = diffTwoDate(dateDebutMandat, dateFinMandat);
+  let nbJourRestantMandat = diffTwoDate(new Date(), dateFinMandat);
+  let ratioMandat = Math.ceil((nbJourMandat - nbJourRestantMandat) / nbJourMandat * 100);
+  document.getElementById('progress-mandat').style.width = ratioMandat + "%";
+  document.getElementById('progress-mandat').textContent = ratioMandat + "%";
+  let dateDebutMandat2020 = new Date("2020-07-03");
+  let dateFin2030 = new Date("2030-01-01");
+  let nbJourMandat2030 = diffTwoDate(dateDebutMandat2020, dateFin2030);
+  let nbJourRestantMandat2030 = diffTwoDate(new Date(), dateFin2030);
+  let ratioMandat2030 = Math.ceil((nbJourMandat2030 - nbJourRestantMandat2030) / nbJourMandat2030 * 100);
+  document.getElementById('progress-full-time-reve').style.width = ratioMandat2030 + "%";
+  document.getElementById('progress-full-time-reve').textContent = ratioMandat2030 + "%";
 }
 
 // Create the map with Mapbox tiles
@@ -396,29 +344,53 @@ info.addTo(map);
 
 //var planVeloUrl = "https://gxis.codeursenliberte.fr/fr/layers/5531d590-7425-4997-aa86-0a0386e48b97/geojson?authkey=Pfoq9bpvPpkjY9j5";
 var planVeloUrl = '/map.json';
-var planDirecteurUrl = "./paris_plan_v_lo_2026.json";
 
-mapLayers['unfinished'] = new L.GeoJSON(
-    null,
-            {onEachFeature: bindFeatureEventsAndComputeTheoryLanesLength, style: styleFeature("path-unfinished"), filter: function (feature, layer) { return (isPlan2022(feature) && ! feature.properties['Réalisation']) ;} } );
-mapLayers['unfinished'].addTo(map);
+mapLayers['no-info'] = new L.GeoJSON(
+  null,
+  {
+    style: styleFeature("path-no-info"),
+    filter: function (feature, layer) { return (feature.properties['etat'] === 'no-info');},
+    onEachFeature: bindFeatureEvents
+  }
+);
+mapLayers['no-info'].addTo(map);
+
+mapLayers['wait'] = new L.GeoJSON(
+  null,
+  {
+    onEachFeature: bindFeatureEvents,
+    style: styleFeature("path-wait"),
+    filter: function (feature, layer) {
+      return (isPlan2022(feature) && feature.properties['etat'] == 'wait') ;
+    }
+  }
+);
+mapLayers['wait'].addTo(map);
 
 // add all layers with realised paths
 Object.entries(mapRealisationColumn).map(function ([key, value]) {
-     mapLayers[value] = new L.GeoJSON(
-      null,
-      {onEachFeature: bindFeatureEventsAndComputeTheoryLanesLength, 
+  mapLayers[value] = new L.GeoJSON(
+    null,
+    {
+      onEachFeature: bindFeatureEventsAndComputeTheoryLanesLength, 
       style: styleFeature("path-" + value),
-      filter: function (feature, layer) { return (isPlan2022(feature) && (feature.properties['Réalisation'] === key)) ;} } );
-     mapLayers[value].addTo(map);
-
+      filter: function (feature, layer) {
+        return (feature.properties.etat === value && isPlan2022(feature));
+      }
+    }
+  );
+  mapLayers[value].addTo(map);
 });
 
 mapLayers['existing'] = new L.GeoJSON(
-    null,
-    {style: styleFeature("path-existing"), filter: function (feature, layer) { return (feature.properties['Etat'] === 'Réalisé Pré-2021');},
-     onEachFeature: bindFeatureEvents } );
-//mapLayers['existing'].addTo(map);
+  null,
+  {
+    style: styleFeature("path-existing"),
+    filter: function (feature, layer) { return (feature.properties['etat'] === 'existant2020');},
+    onEachFeature: bindFeatureEvents
+  }
+);
+mapLayers['existing'].addTo(map);
 
 fetch(planVeloUrl)
 .then((response) => response.json())
@@ -444,3 +416,10 @@ L.control.layers(null, overlayLayers, {position: "topright", collapsed: false}).
 
 // Add event listeners to display/hide legend items
 map.on("overlayremove overlayadd", toggleLegend) ;
+
+let allCheckBox = document.querySelectorAll('.checkbox');
+allCheckBox.forEach((checkbox) => {
+  checkbox.addEventListener('change', (event) => {
+    toggleLayer(event.target.dataset.layer);
+  })
+});
