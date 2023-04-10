@@ -3,15 +3,7 @@ import './styles/map.css';
 import * as turf from '@turf/turf'
 
 var map;
-var areaParisSquareKilometers =
-  105.4 // https://fr.wikipedia.org/wiki/Paris#Topographie
-    - 23.94  // Area of parks and garden, see https://fr.wikipedia.org/wiki/Liste_des_espaces_verts_de_Paris
-    - 1.38 // Area of the Boulevard Péripérique https://fr.wikipedia.org/wiki/Boulevard_p%C3%A9riph%C3%A9rique_de_Paris#Voies_de_circulation
-    - 1.7  // Estimated area of the Seine river in Paris, rounded to the nearest 0.1km2
-    - 0.9567 ; // Area of graveyards https://fr.wikipedia.org/wiki/Cimeti%C3%A8res_parisiens
-var areaZonesApaisees = 0 ;
 var totalTheory = 0; 
-var lengthLanesDone = 0.0;
 var mapRealisationColumn = {
        "Plots jaunes": "wait",
        "Semi-pérennisation légère": "etude", 
@@ -22,7 +14,6 @@ var markers = [] ;
 var mapLayers = {};
 var zoomLevelToMarkerSize = { 11: 24, 12: 24, 13: 24, 14: 24, 15: 32, 16: 32, 17: 48, 18: 48, 19: 64 } ;
 var planVeloPratiqueLayer ;
-var hueReferences = [ [0, "#ff0000"], [0.33333, "#228b22"], [0.10784, "#ffa500"] ] ; // Red, green, orange
 
 function isPlan2022(feature) {
   var plan2022 = ['wait', 'etude', 'travaux', 'done'];
@@ -243,6 +234,7 @@ function styleFeature(className) {
     return applyStyle;
 }
 
+let lengthByState = {};
 function calculateLengths(features)
 {
   var length, realisation;
@@ -251,13 +243,15 @@ function calculateLengths(features)
     // length = parseFloat(feature.properties.calculated_length) / 1000;
     if (length) {
       totalTheory +=  length;
-      if (isComplete(feature)) {
-        lengthLanesDone += length;
+
+      if (typeof lengthByState[feature.properties.etat] == 'undefined') {
+        lengthByState[feature.properties.etat] = 0;
       }
+      lengthByState[feature.properties.etat] += length;
     }
   }
   console.log("totalTheory = ", totalTheory);
-  console.log("done = ", lengthLanesDone);
+  console.log("done = ", lengthByState);
 }
 
 
@@ -281,10 +275,20 @@ function diffTwoDate(date1, date2)
 // Function to display set the width of the progress bar
 function displayProgressBars()
 {
-  var totalDone = lengthLanesDone;
-  var totalDonePercent = Math.round((totalDone / totalTheory) * 100);
-  document.getElementById('progress-done').style.width = totalDonePercent + "%";
-  document.getElementById('progress-done').textContent = totalDonePercent + "%";
+  for (const [state, length] of Object.entries(lengthByState)) {
+    if (state == 'undefined') {
+      continue;
+    }
+    let totalDonePercent = Math.round((length / totalTheory) * 100);
+    let div = document.getElementById("state--" + state);
+    if (div) {
+      div.style.width = totalDonePercent + "%";
+      let elements = div.getElementsByClassName('value');
+      if (elements[0]) {
+        elements[0].textContent = totalDonePercent + "%";
+      }
+    }
+  }
 
   var dateDebutMandat = new Date("2020-07-03");
   var dateFinMandat = new Date("2026-07-03");
