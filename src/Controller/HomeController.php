@@ -15,4 +15,11 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
         ]);
     }
+
+    #[Route('/evolution_pratique', name: 'app_evolution_pratique')]
+    public function evolutionPratique(): Response
+    {
+        return $this->render('home/evolution_pratique.html.twig', [
+        ]);
+    }
 }
