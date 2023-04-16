@@ -1,6 +1,16 @@
 version: '3'
 
+
 services:
+  web:
+    build: web
+    volumes:
+      - .:/var/www/html/
+    #      - ~/.bash_history:/root/.bash_history
+    ports:
+      - "80:80"
+      - "443:443"
+
 ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
