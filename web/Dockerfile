@@ -89,3 +89,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 sudo -u www-data composer --version && \
 mkdir /var/www/.composer && \
 chown www-data:www-data /var/www/.composer
+
+# ~~~~~~ INSTALL POSTGRESQL ~~~~~
+RUN apt-get install -y libpq-dev \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo pdo_pgsql pgsql
