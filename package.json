@@ -25,6 +25,7 @@
         "@turf/turf": "^6.5.0",
         "autoprefixer": "^10.4.14",
         "leaflet": "^1.9.3",
+        "leaflet-ajax": "calvinmetcalf/leaflet-ajax",
         "postcss": "^8.4.21",
         "postcss-loader": "^7.1.0",
         "prettier": "^2.8.5",

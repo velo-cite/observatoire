@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import 'leaflet-ajax';
 import './styles/map.css';
 import * as turf from '@turf/turf'
 
@@ -404,22 +405,33 @@ fetch(planVeloUrl)
  })
 .then(() => displayProgressBars());
 
-// var directeurPlanVeloLayer = new L.GeoJSON.AJAX(
-//    planDirecteurUrl, 
-//   {style: {className: 'schema-directeur' }} );
-//directeurPlanVeloLayer.addTo(map);
-//directeurPlanVeloLayer.on("data:loaded", function () { directeurPlanVeloLayer.bringToFront(); }) ;
+var barometreFUB2021 = L.geoJson.ajax(
+   '/points_noirs_bx-metro_barometre_fub.geojson',
+  {style: {className: 'schema-directeur' }} );
+barometreFUB2021.addTo(map);
+map.removeLayer(barometreFUB2021);
+
+barometreFUB2021.on("data:loaded", function () { barometreFUB2021.bringToFront(); }) ;
 
 // Add control to display or hide layers
 var overlayLayers = {
   //"Plan Vélo 2021-26": planVeloTheorieLayer,
-  "Réseau réalisé avant 2021": mapLayers['existing'] 
+  "Réseau réalisé avant 2021": mapLayers['existing'],
+  "Point noir baromètre Parlons Vélo 2021": barometreFUB2021,
   //"Schema Directeur 2021-2026": directeurPlanVeloLayer,
 };
 L.control.layers(null, overlayLayers, {position: "topright", collapsed: false}).addTo(map);
 
 // Add event listeners to display/hide legend items
 map.on("overlayremove overlayadd", toggleLegend) ;
+
+map.on('zoom', function() {
+  if (map.getZoom() === 12) {
+    map.addLayer(barometreFUB2021);
+  } else if (map.getZoom() <= 11) {
+    map.removeLayer(barometreFUB2021);
+  }
+});
 
 let allCheckBox = document.querySelectorAll('.checkbox');
 allCheckBox.forEach((checkbox) => {
