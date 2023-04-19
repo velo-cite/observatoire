@@ -9,6 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: BlocCMSRepository::class)]
 class BlocCMS
 {
+    const EVOLUTION_PRATIQUE_BEFORE = 'evolution-pratique-before';
+    const EVOLUTION_PRATIQUE_AFTER = 'evolution-pratique-after';
+    const ENGAGEMENT = 'engagement';
+    const HOME_SITE_DESCRIPTION = 'home-site-description';
+
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

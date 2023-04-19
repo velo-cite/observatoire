@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Évolution de la pratique | {{ parent() }}{% endblock %}
+
+{% block titleH1 %}Évolution de la pratique{% endblock %}
+
+{% block body %}
+{{ render_esi(controller('App\\Controller\\BlocCmsController::index', { key: constant('App\\Entity\\BlocCMS::ENGAGEMENT') })) }}
+{% endblock %}

@@ -7,7 +7,8 @@
 
 
 {% block body %}
-
+{{ render_esi(controller('App\\Controller\\BlocCmsController::index', { key: constant('App\\Entity\\BlocCMS::HOME_SITE_DESCRIPTION') })) }}
+<ul class="list-disc list-inside"></ul>
 <div class="w-full mt-6 pt-4 mb-10">
   <p>Taux d'avancement du ReVE :</p>
   <div class="shadow w-full bg-stone-200">

@@ -149,3 +149,11 @@ label.checkbox {
         background-color: $green;
     }
 }
+
+.block-info {
+    padding: 1rem;
+    background-color: #7dc6e7;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    //border-radius: 5px;
+    font-size: 0.8rem;
+}

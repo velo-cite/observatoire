@@ -22,4 +22,11 @@ class HomeController extends AbstractController
         return $this->render('home/evolution_pratique.html.twig', [
         ]);
     }
+
+    #[Route('/engagement', name: 'app_engagement')]
+    public function engagement(): Response
+    {
+        return $this->render('home/engagement.html.twig', [
+        ]);
+    }
 }

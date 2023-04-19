@@ -6,6 +6,7 @@
 {% block titleH1 %}Évolution de la pratique{% endblock %}
 
 {% block body %}
+{{ render_esi(controller('App\\Controller\\BlocCmsController::index', { key: constant('App\\Entity\\BlocCMS::EVOLUTION_PRATIQUE_BEFORE') })) }}
 <p style="text-align:center"><img alt="" src="https://pbs.twimg.com/media/Fl0t7ccWQAADumo?format=jpg&amp;name=large" style="height:375px; width:500px" /></p>
-{{ render_esi(controller('App\\Controller\\BlocCmsController::index', { key: 'evolution-pratique-after' })) }}
+{{ render_esi(controller('App\\Controller\\BlocCmsController::index', { key: constant('App\\Entity\\BlocCMS::EVOLUTION_PRATIQUE_AFTER') })) }}
 {% endblock %}

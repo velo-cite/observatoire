@@ -56,9 +56,36 @@ class AppFixtures extends Fixture
         $article->setContent('<p><img alt="" src="/radar/radar.png" style="height:886px; width:1841px" /></p>');
         $manager->persist($article);
 
+
         $bloc_cms = new BlocCMS();
-        $bloc_cms->setKey('evolution-pratique-after');
+        $bloc_cms->setKey(BlocCMS::EVOLUTION_PRATIQUE_BEFORE);
+        $bloc_cms->setContent('<p>Evolution de la pratique before graphique</p>');
+        $manager->persist($bloc_cms);
+
+        $bloc_cms = new BlocCMS();
+        $bloc_cms->setKey(BlocCMS::EVOLUTION_PRATIQUE_AFTER);
         $bloc_cms->setContent('<p>Evolution de la pratique post graphique</p>');
+        $manager->persist($bloc_cms);
+
+        $bloc_cms = new BlocCMS();
+        $bloc_cms->setKey(BlocCMS::ENGAGEMENT);
+        $bloc_cms->setContent('<p>TODO : écrire contenu</p>');
+        $manager->persist($bloc_cms);
+
+        $bloc_cms = new BlocCMS();
+        $bloc_cms->setKey(BlocCMS::HOME_SITE_DESCRIPTION);
+        $bloc_cms->setContent("<div class='block-info'>
+Ce site utilise et analyse les données publiques et les aménagements sur la métropole de Bordeaux afin de suivre :
+<ul class=\"list-disc list-inside\">
+<li>Le Réseaux Express Vélo</li>
+<li>Les aménagements par commune</li>
+<li>Les vitesses réelles en zone 30</li>
+<li>La pratique du vélo</li>
+</ul>
+Vous trouverez également un Blog avec des articles épisodiques.<br>
+Ces observations factuelles serviront à dresser un bilan de mi-mandat militant et \"politique\" de cet observatoire.<br>
+Il nous permettra par exemple de juger si la vitesse de déploiement des différents aménagements est suffisament rapide.
+</div>");
         $manager->persist($bloc_cms);
 
         $manager->flush();
