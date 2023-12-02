@@ -17,12 +17,12 @@ var planVeloPratiqueLayer ;
 
 function isPlan2022(feature) {
   var plan2022 = ['wait', 'etude', 'travaux', 'done'];
-  return plan2022.includes(feature.properties['etat']);
+  return plan2022.includes(feature.properties['status']);
 }
 
 function isComplete(feature) {
   var plan2022 = ['existant2020', 'done'];
-  return plan2022.includes(feature.properties['etat']);
+  return plan2022.includes(feature.properties['status']);
 }
 
 
@@ -55,7 +55,7 @@ function toggleLegend(e)
 
 function areaFeature(feature, layer)
 {
-  areaZonesApaisees += Math.round( 10 * turf.area(feature) ) / 10 ;
+  // areaZonesApaisees += Math.round( 10 * turf.area(feature) ) / 10 ;
 
   layer.on(
   {
@@ -124,8 +124,8 @@ function updateInfo(feature)
       content += "ReVE n°" + feature.properties.numReve+"<br/>" ;
     }
     content += "Surface : "+areaFeature+"km²<br/>";
-    if (feature.properties && feature.properties.etat) {
-      content += "État : " + feature.properties.etat;
+    if (feature.properties && feature.properties.status) {
+      content += "État : " + feature.properties.status;
     }
   } else if ( typeof feature != "undefined" && feature.geometry.type == "LineString" ) {
     var lengthFeature = Math.round( 100 * turf.lineDistance(feature) ) / 100 ;
@@ -207,7 +207,7 @@ function styleFeature(className) {
     {
         var finalClassName = className;
         let colorCss;
-        switch (feature.properties['etat']) {
+        switch (feature.properties['status']) {
           case "wait":
             colorCss = 'wait';
             break;
@@ -215,11 +215,10 @@ function styleFeature(className) {
             colorCss = 'etude';
             break;
           case "travaux":
+          case "wip":
             colorCss = 'travaux';
             break;
           case "done":
-            colorCss = 'done';
-            break;
           case "existant2020":
             colorCss = 'done';
             break;
@@ -239,15 +238,16 @@ function calculateLengths(features)
 {
   var length, realisation;
   for (const feature of features) {
-    length = turf.area(feature, {units: "kilometers"});
+    length = turf.lineDistance(feature, {units: "kilometers"});
+    console.log(length)
     // length = parseFloat(feature.properties.calculated_length) / 1000;
     if (length) {
       totalTheory +=  length;
 
-      if (typeof lengthByState[feature.properties.etat] == 'undefined') {
-        lengthByState[feature.properties.etat] = 0;
+      if (typeof lengthByState[feature.properties.status] == 'undefined') {
+        lengthByState[feature.properties.status] = 0;
       }
-      lengthByState[feature.properties.etat] += length;
+      lengthByState[feature.properties.status] += length;
     }
   }
   console.log("totalTheory = ", totalTheory);
@@ -347,13 +347,13 @@ info.update = updateInfo;
 info.addTo(map);
 
 //var planVeloUrl = "https://gxis.codeursenliberte.fr/fr/layers/5531d590-7425-4997-aa86-0a0386e48b97/geojson?authkey=Pfoq9bpvPpkjY9j5";
-var planVeloUrl = '/map.json';
+var planVeloUrl = '/reve_bxmetro.geojson';
 
 mapLayers['no-info'] = new L.GeoJSON(
   null,
   {
     style: styleFeature("path-no-info"),
-    filter: function (feature, layer) { return (feature.properties['etat'] === 'no-info');},
+    filter: function (feature, layer) { return (feature.properties['status'] === 'no-info');},
     onEachFeature: bindFeatureEvents
   }
 );
@@ -365,7 +365,7 @@ mapLayers['wait'] = new L.GeoJSON(
     onEachFeature: bindFeatureEvents,
     style: styleFeature("path-wait"),
     filter: function (feature, layer) {
-      return (isPlan2022(feature) && feature.properties['etat'] == 'wait') ;
+      return (isPlan2022(feature) && feature.properties['status'] == 'wait') ;
     }
   }
 );
@@ -379,7 +379,7 @@ Object.entries(mapRealisationColumn).map(function ([key, value]) {
       onEachFeature: bindFeatureEventsAndComputeTheoryLanesLength, 
       style: styleFeature("path-" + value),
       filter: function (feature, layer) {
-        return (feature.properties.etat === value && isPlan2022(feature));
+        return (feature.properties.status === value && isPlan2022(feature));
       }
     }
   );
@@ -390,7 +390,7 @@ mapLayers['existing'] = new L.GeoJSON(
   null,
   {
     style: styleFeature("path-existing"),
-    filter: function (feature, layer) { return (feature.properties['etat'] === 'existant2020');},
+    filter: function (feature, layer) { return (feature.properties['status'] === 'existant2020');},
     onEachFeature: bindFeatureEvents
   }
 );
@@ -399,13 +399,13 @@ mapLayers['existing'].addTo(map);
 fetch(planVeloUrl)
 .then((response) => response.json())
 .then(function (data) {
-   calculateLengths(data.features);
-   Object.values(mapLayers).map((map) => (map.addData(data)));
+  calculateLengths(data.features);
+  Object.values(mapLayers).map((map) => (map.addData(data)));
  })
 .then(() => displayProgressBars());
 
 // var directeurPlanVeloLayer = new L.GeoJSON.AJAX(
-//    planDirecteurUrl, 
+//    planDirecteurUrl,
 //   {style: {className: 'schema-directeur' }} );
 //directeurPlanVeloLayer.addTo(map);
 //directeurPlanVeloLayer.on("data:loaded", function () { directeurPlanVeloLayer.bringToFront(); }) ;
