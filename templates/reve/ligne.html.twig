@@ -10,6 +10,9 @@
 
 {% block body %}
 
+    <div>
+        {{ ligneReve.contentBefore|raw }}
+    </div>
     <p>Taux d'avancement de la ligne {{ ligneReve.numero }} :</p>
     <div class="shadow w-full bg-stone-200">
         <div id="progress-done" class="text-xs leading-none text-white">
@@ -21,12 +24,12 @@
             <div id="state--existant2020" class="state transition-all duration-1000 state--done py-1 text-center" style="width: 0%"><span class="value">0%</span><span class="tooltiptext">Existant avant 2020</span></div>
         </div>
     </div>
-
     <div class="pt-6">
         <div id="mapFrame"></div>
     </div>
-
-    {{ render_esi(controller('App\\Controller\\BlocCmsController::index', { key: constant('App\\Entity\\BlocCMS::HOME_SITE_DESCRIPTION') })) }}
+    <div>
+        {{ ligneReve.contentAfter|raw }}
+    </div>
 {% endblock %}
 
 {% block javascripts %}

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\LigneReVERepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LigneReVERepository::class)]
@@ -19,6 +20,12 @@ class LigneReVE
 
     #[ORM\Column]
     private ?int $numero = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $contentBefore = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $contentAfter = null;
 
     public function getId(): ?int
     {
@@ -45,6 +52,30 @@ class LigneReVE
     public function setNumero(int $numero): self
     {
         $this->numero = $numero;
+
+        return $this;
+    }
+
+    public function getContentBefore(): ?string
+    {
+        return $this->contentBefore;
+    }
+
+    public function setContentBefore(?string $contentBefore): self
+    {
+        $this->contentBefore = $contentBefore;
+
+        return $this;
+    }
+
+    public function getContentAfter(): ?string
+    {
+        return $this->contentAfter;
+    }
+
+    public function setContentAfter(?string $contentAfter): self
+    {
+        $this->contentAfter = $contentAfter;
 
         return $this;
     }
