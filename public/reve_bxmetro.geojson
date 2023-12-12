@@ -8,6 +8,7 @@
         "_umap_options": {
           "color": "#0eb5ae"
         },
+        "num": 2,
         "name": "ReVE 2"
       },
       "geometry": {
@@ -552,6 +553,7 @@
       "type": "Feature",
       "properties": {
         "status" : "no-info",
+        "num": 1,
         "name": "ReVE 1"
       },
       "geometry": {
@@ -580,6 +582,7 @@
       "type": "Feature",
       "properties": {
         "status" : "no-info",
+        "num": 1,
         "name": "ReVE 1"
       },
       "geometry": {
@@ -1075,6 +1078,7 @@
         "_umap_options": {
           "color": "#75613e"
         },
+        "num": 4,
         "name": "ReVE 4"
       },
       "geometry": {
@@ -1610,6 +1614,7 @@
         "_umap_options": {
             "color":"#75613e"
         },
+        "num": 4,
         "name": "ReVE 4 - pont Simone Veil",
         "status": "wip"
       },
@@ -1635,6 +1640,7 @@
         "_umap_options": {
           "color": "#edb598"
         },
+        "num": 3,
         "name": "ReVE 3"
       },
       "geometry": {
@@ -2063,6 +2069,7 @@
       "type": "Feature",
       "properties": {
         "status" : "etude",
+        "num": 5,
         "name": "ReVE 5"
       },
       "geometry": {
@@ -2290,6 +2297,7 @@
         "_umap_options": {
           "color": "Fuchsia"
         },
+        "num": 6,
         "name": "ReVE 6"
       },
       "geometry": {
@@ -2410,6 +2418,7 @@
       "type": "Feature",
       "properties": {
         "status" : "etude",
+        "num": 7,
         "name": "ReVE 7"
       },
       "geometry": {
@@ -2582,6 +2591,7 @@
       "type": "Feature",
       "properties": {
         "status" : "no-info",
+        "num": 8,
         "name": "ReVE 8"
       },
       "geometry": {
@@ -2846,6 +2856,7 @@
       "type": "Feature",
       "properties": {
         "status" : "no-info",
+        "num": 9,
         "name": "ReVE 9"
       },
       "geometry": {
@@ -3038,6 +3049,7 @@
       "type": "Feature",
       "properties": {
         "status" : "no-info",
+        "num": 10,
         "name": "ReVE 10"
       },
       "geometry": {
@@ -3202,6 +3214,7 @@
       "type": "Feature",
       "properties": {
         "status" : "etude",
+        "num": 11,
         "name": "ReVE 11"
       },
       "geometry": {
@@ -3574,6 +3587,7 @@
       "type": "Feature",
       "properties": {
         "status" : "etude",
+        "num": 11,
         "name": "ReVE 11"
       },
       "geometry": {
@@ -3610,6 +3624,7 @@
       "type": "Feature",
       "properties": {
         "status" : "done",
+        "num": 12,
         "name": "ReVE 12"
       },
       "geometry": {
@@ -4746,6 +4761,7 @@
       "type": "Feature",
       "properties": {
         "status" : "no-info",
+        "num": 13,
         "name": "ReVE 13"
       },
       "geometry": {
@@ -5026,6 +5042,7 @@
       "type": "Feature",
       "properties": {
         "status" : "no-info",
+        "num": 14,
         "name": "ReVE 14"
       },
       "geometry": {

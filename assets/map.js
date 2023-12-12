@@ -108,26 +108,7 @@ function resetStyleFeature(e)
 function updateInfo(feature)
 {
   var content = '' ;
-  if ( typeof feature != "undefined" && feature.geometry.type == "Polygon") {
-    var areaFeature = turf.area(feature) / 1000000.0 ;
-    areaFeature = Math.round( 1000 * areaFeature ) / 1000 ;
-    if (feature.properties && feature.properties.name) {
-      content += "<b>"+feature.properties.name+"</b><br/>" ;
-    }
-    if (feature.properties && feature.properties.description) {
-      content += feature.properties.description+"<br/>" ;
-    }
-    if (feature.properties && feature.properties.gid) {
-      content += "Id : " + feature.properties.gid+"<br/>" ;
-    }
-    if (feature.properties && feature.properties.numReve) {
-      content += "ReVE n°" + feature.properties.numReve+"<br/>" ;
-    }
-    content += "Surface : "+areaFeature+"km²<br/>";
-    if (feature.properties && feature.properties.status) {
-      content += "État : " + feature.properties.status;
-    }
-  } else if ( typeof feature != "undefined" && feature.geometry.type == "LineString" ) {
+  if ( typeof feature != "undefined" && feature.geometry.type == "LineString" ) {
     var lengthFeature = Math.round( 100 * turf.lineDistance(feature) ) / 100 ;
 
     if (feature.properties && feature.properties['Rue ou axe']) {
@@ -151,7 +132,8 @@ function updateInfo(feature)
       content += feature.properties.description+"<br/>" ;
     }
   } else {
-    content = "Placez le curseur sur un segment pour plus d'informations" ;
+    content = "Placez le curseur sur un segment pour plus d'informations<br>" +
+        "Cliquez sur une ligne pour l'ouvrir" ;
   }
 
   this._div.innerHTML = '<h4>Informations</h4>' + content ;
@@ -163,7 +145,10 @@ function bindFeatureEvents(feature, layer)
   {
     mouseover: highlightFeature,
     mouseout: resetStyleFeature,
-    click: function (e) { info.update(e.target.feature) ; }
+    click: function (e) {
+      let path = document.getElementById('mapFrame').dataset.pathligne;
+      window.location = path.replace("-1", e.target.feature.properties.num);
+    }
   });
 }
 // Compute the total length of bike lanes
