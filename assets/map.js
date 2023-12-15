@@ -383,6 +383,12 @@ mapLayers['existing'].addTo(map);
 
 fetch(planVeloUrl)
 .then((response) => response.json())
+.then(function(data) {
+  if (typeof map._container.dataset.onlyline != 'undefined') {
+    data.features = data.features.filter(d => d.properties.num == map._container.dataset.onlyline);
+  }
+  return data;
+})
 .then(function (data) {
   calculateLengths(data.features);
   Object.values(mapLayers).map((map) => (map.addData(data)));
