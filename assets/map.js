@@ -68,39 +68,14 @@ function areaFeature(feature, layer)
 function highlightFeature(e)
 {
   var layer = e.target;
-
-  //layer.className += " selected";
-  //layer.setStyle({class: 'my-class', weight: 10});
-  // $(layer._path).addClass("path-selected");
-  layer.className += " selected";
-
-  layer.setStyle({class: "selected"});
-
-  // Nothing to highlight for a point, so don't change its style
-  //if ( layer.feature.geometry.type != "Point" )
-  //{
-  //  var newStyle = styleFeature(layer.feature) ;
-
-  //  if ( layer.feature.geometry.type == "Polygon")
-  //    newStyle.fillOpacity += 0.2 ;
-  //  else
-  //    newStyle.weight += 2 ;
-
-  //  layer.setStyle(newStyle) ;
-  //}
-
+  layer.setStyle({weight: 8});
   info.update(layer.feature) ;
 }
 
 function resetStyleFeature(e)
 {
   var layer = e.target;
-  // $(layer._path).removeClass("path-selected");
-  // if ( layer.feature.geometry.type != "Point" )
-  // {
-  //   //layer.setStyle(styleFeature(layer.feature)) ;
-  // }
-
+  layer.setStyle({weight: layer.defaultOptions.weight});
   info.update() ;
 }
 
@@ -123,7 +98,10 @@ function updateInfo(feature)
     if (feature.properties && feature.properties.description) {
       content += feature.properties.description+"<br/>" ;
     }
-    content += "Longueur : "+lengthFeature+"km";
+    content += "Ligne " + ((feature.properties && feature.properties.num) ? feature.properties.num : '')
+                        + ((feature.properties && feature.properties.name) ? ' - '+ feature.properties.name : '')
+                        +"<br />";
+    content += "Longueur : "+lengthFeature+"km <br />";
   } else if ( typeof feature != "undefined" && feature.geometry.type == "Point" ) {
     if (feature.properties && feature.properties.name) {
       content += "<b>"+feature.properties.name+"</b><br/>" ;
