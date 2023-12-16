@@ -16,7 +16,7 @@ var zoomLevelToMarkerSize = { 11: 24, 12: 24, 13: 24, 14: 24, 15: 32, 16: 32, 17
 var planVeloPratiqueLayer ;
 
 function isPlan2022(feature) {
-  var plan2022 = ['wait', 'etude', 'travaux', 'done'];
+  var plan2022 = ['wait', 'etude', 'wip', 'done'];
   return plan2022.includes(feature.properties['status']);
 }
 
@@ -328,11 +328,23 @@ mapLayers['wait'] = new L.GeoJSON(
     onEachFeature: bindFeatureEvents,
     style: styleFeature("path-wait"),
     filter: function (feature, layer) {
-      return (isPlan2022(feature) && feature.properties['status'] == 'wait') ;
+      return (isPlan2022(feature) && feature.properties['status'] === 'wait') ;
     }
   }
 );
 mapLayers['wait'].addTo(map);
+
+mapLayers['wip'] = new L.GeoJSON(
+  null,
+  {
+    onEachFeature: bindFeatureEvents,
+    style: styleFeature("path-wip"),
+    filter: function (feature, layer) {
+      return (isPlan2022(feature) && feature.properties['status'] === 'wip') ;
+    }
+  }
+);
+mapLayers['wip'].addTo(map);
 
 // add all layers with realised paths
 Object.entries(mapRealisationColumn).map(function ([key, value]) {
