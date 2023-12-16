@@ -231,16 +231,17 @@ function displayProgressBars()
 map = L.map('mapFrame',
   {
     fullscreenControl: true,
-    maxBounds: [ [44.944797, -0.766678], [44.749594, -0.500209] ],
-    maxBoundsViscosity: 1.0,
-    minZoom: 11
+    center: [51.505, -0.09],
+    zoom: 13
+    // maxBounds: [ [46, -2], [44, 0] ],
+    // maxBoundsViscosity: 1.0,
   }) ;
 L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
   maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a> | Vélo-Cité Bordeaux Métropole | Mise à jour : 21/03/2023',
   subdomains: 'abcd',
 }).addTo(map);
-map.fitBounds([ [44.90, -0.766678], [44.749594, -0.500209] ]) ;
+// map.fitBounds([ [44.90, -0.766678], [44.749594, -0.500209] ]) ;
 map.on('movestart', function(e) { info.update() ; });
 map.on('zoomstart', function(e) { info.update() ; });
 map.scrollWheelZoom.disable()
@@ -250,8 +251,7 @@ map.on('zoomend', function(e)
 {
   var iconSize = zoomLevelToMarkerSize[ map.getZoom() ] ;
   var icon = L.icon({ iconUrl: 'assets/images/warning'+iconSize+'.png', iconSize: [iconSize, iconSize], iconAnchor: [iconSize/2, iconSize/2] }) ;
-  for ( var iMarker = 0 ; iMarker < markers.length ; iMarker++ )
-  {
+  for ( var iMarker = 0 ; iMarker < markers.length ; iMarker++ ) {
     markers[iMarker].setIcon(icon) ;
   }
 }) ;
@@ -338,7 +338,9 @@ fetch(planVeloUrl)
 })
 .then(function (data) {
   calculateLengths(data.features);
-  Object.values(mapLayers).map((map) => (map.addData(data)));
+  Object.values(mapLayers).map((mapLayer) => (mapLayer.addData(data)));
+  let bbox = turf.bbox(data);
+  map.fitBounds([[bbox[1], bbox[0]], [bbox[3], bbox[2]]]);
  })
 .then(() => displayProgressBars());
 
