@@ -53,18 +53,6 @@ function toggleLegend(e)
   }
 }
 
-function areaFeature(feature, layer)
-{
-  // areaZonesApaisees += Math.round( 10 * turf.area(feature) ) / 10 ;
-
-  layer.on(
-  {
-    mouseover: highlightFeature,
-    mouseout: resetStyleFeature,
-    click: function (e) { info.update(e.target.feature) ; }
-  });
-}
-
 function highlightFeature(e)
 {
   var layer = e.target;
@@ -136,33 +124,6 @@ function bindFeatureEventsAndComputeTheoryLanesLength(feature, layer)
   bindFeatureEvents(feature, layer) ;
 }
 
-// Function to convert a color in RGB color space to HSV color space
-function rgbToHsl(r, g, b)
-{
-  r /= 255.0, g /= 255.0, b /= 255.0;
-  var max = Math.max(r, g, b), min = Math.min(r, g, b);
-  var h, s, l = (max + min) / 2.0;
-
-  if(max == min)
-  {
-    h = s = 0; // achromatic
-  }
-  else
-  {
-    var d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch(max)
-    {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-      case g: h = (b - r) / d + 2; break;
-      case b: h = (r - g) / d + 4; break;
-    }
-    h /= 6.0;
-  }
-
-  return [h, s, l];
-}
-
 // Function to get the style to apply to a feature
 function styleFeature(className) {
 
@@ -202,11 +163,8 @@ function calculateLengths(features)
   var length, realisation;
   for (const feature of features) {
     length = turf.lineDistance(feature, {units: "kilometers"});
-    console.log(length)
-    // length = parseFloat(feature.properties.calculated_length) / 1000;
     if (length) {
       totalTheory +=  length;
-
       if (typeof lengthByState[feature.properties.status] == 'undefined') {
         lengthByState[feature.properties.status] = 0;
       }
@@ -309,7 +267,6 @@ info.onAdd = function (map)
 info.update = updateInfo;
 info.addTo(map);
 
-//var planVeloUrl = "https://gxis.codeursenliberte.fr/fr/layers/5531d590-7425-4997-aa86-0a0386e48b97/geojson?authkey=Pfoq9bpvPpkjY9j5";
 var planVeloUrl = '/reve_bxmetro.geojson';
 
 mapLayers['no-info'] = new L.GeoJSON(
@@ -385,17 +342,9 @@ fetch(planVeloUrl)
  })
 .then(() => displayProgressBars());
 
-// var directeurPlanVeloLayer = new L.GeoJSON.AJAX(
-//    planDirecteurUrl,
-//   {style: {className: 'schema-directeur' }} );
-//directeurPlanVeloLayer.addTo(map);
-//directeurPlanVeloLayer.on("data:loaded", function () { directeurPlanVeloLayer.bringToFront(); }) ;
-
 // Add control to display or hide layers
 var overlayLayers = {
-  //"Plan Vélo 2021-26": planVeloTheorieLayer,
-  "Réseau réalisé avant 2021": mapLayers['existing'] 
-  //"Schema Directeur 2021-2026": directeurPlanVeloLayer,
+  "Réseau réalisé avant 2021": mapLayers['existing']
 };
 L.control.layers(null, overlayLayers, {position: "topright", collapsed: false}).addTo(map);
 
