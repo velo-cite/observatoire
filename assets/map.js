@@ -113,7 +113,11 @@ function bindFeatureEvents(feature, layer)
     mouseout: resetStyleFeature,
     click: function (e) {
       let path = document.getElementById('mapFrame').dataset.pathligne;
-      window.location = path.replace("-1", e.target.feature.properties.num);
+      let num = e.target.feature.properties.num;
+      if (Array.isArray(e.target.feature.properties.num)) {
+        num = e.target.feature.properties.num[0];
+      }
+      window.location = path.replace("-1", num);
     }
   });
 }
