@@ -71,7 +71,7 @@ function resetStyleFeature(e)
 function updateInfo(feature)
 {
   var content = '' ;
-  if ( typeof feature != "undefined" && feature.geometry.type == "LineString" ) {
+  if ( typeof feature != "undefined" && ["LineString", "MultiLineString" ].includes(feature.geometry.type)) {
     var lengthFeature = Math.round( 100 * turf.lineDistance(feature) ) / 100 ;
 
     if (feature.properties && feature.properties['Rue ou axe']) {
