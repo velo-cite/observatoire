@@ -552,7 +552,7 @@
     {
       "type": "Feature",
       "properties": {
-        "status" : "no-info",
+        "status" : "wip",
         "num": 1,
         "name": "ReVE 1"
       },
@@ -581,7 +581,7 @@
     {
       "type": "Feature",
       "properties": {
-        "status" : "no-info",
+        "status" : "wip",
         "num": 1,
         "name": "ReVE 1"
       },
@@ -1614,8 +1614,8 @@
         "_umap_options": {
             "color":"#75613e"
         },
-        "num": 4,
-        "name": "ReVE 4 - pont Simone Veil",
+        "num": [4, 13],
+        "name": "ReVE 4 et 13 - pont Simone Veil",
         "status": "wip"
       },
       "geometry": {
@@ -1630,8 +1630,7 @@
             44.824313
           ]
         ]
-      },
-      "id": 4
+      }
     },
     {
       "type": "Feature",
